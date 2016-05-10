@@ -15,53 +15,67 @@ int PhotoRight = 0;
 int PhotoLeft = 0;
 int xDiff = 0;
 int yDiff = 0;
-int servoXPos = 0;
-int servoYPos = 0;
+int servoXPos = 90;
+int servoYPos = 45;
 
 void setup() {
   servoX.attach(10);  
   servoY.attach(9);  
+  servoY.write(servoYPos);
+  servoX.write(servoXPos);
+  //Serial.begin(9600);
 }
 
 void loop() {
-  getLEDvalues();
-  //servoXPos = map(sensorValue, 0, 1023, 0, 180);
-  
+  getPhotoValues();
+  //serialOut();
+  xDiff = PhotoRight - PhotoLeft;
+  constrainedXupdate(xDiff);
+    
   if(PhotoLeft >= PhotoRight)
   {
-    xDiff = PhotoLeft - PhotoRight;
-    servoXPos = 90 + xDiff;
-    servoX.write(servoXPos);
-    
+    yDiff = PhotoBottom - PhotoLeft;
+    constrainedYupdate(yDiff);
   }else{
-    xDiff = PhotoRight - PhotoLeft;
-    servoXPos = 90 - xDiff;
-    servoX.write(servoXPos);
-    
+    yDiff = PhotoBottom - PhotoRight;
+    constrainedYupdate(yDiff);
   }
+  
 }
 
-void getLEDvalues(){
-  delay(10);// delay in between reads for stability
+void serialOut()
+{
+  Serial.println(PhotoLeft);
+  Serial.println(PhotoRight);
+  Serial.println(PhotoBottom);
+  Serial.println("=====");
+}
+
+void constrainedXupdate(int byThisMuch)
+{
+  servoXPos = servoXPos + byThisMuch;
+  servoXPos = constrain(servoXPos, 1, 178);
+  servoX.write(servoXPos);
+}
+
+void constrainedYupdate(int byThisMuch)
+{
+  servoYPos = servoYPos + byThisMuch;
+  servoYPos = constrain(servoYPos, 10, 140);
+  servoY.write(servoYPos);
+}
+
+void getPhotoValues(){
+  delay(30);// delay in between reads for stability
   PhotoBottom = analogRead(PhotoBottomPin);
   PhotoRight = analogRead(PhotoRightPin);
   PhotoLeft = analogRead(PhotoLeftPin);
+  //re-calibrate
+  PhotoLeft = map(PhotoLeft, 0, 500, 0, 90);
+  PhotoRight = map(PhotoRight, 0, 500, 0, 90);
+  PhotoBottom = map(PhotoBottom, 0, 500, 0, 90);
 }
 
-void movementTestLoop()
-{
-  for (pos = 0; pos <= 180; pos += 1) { 
-    // in steps of 1 degree
-    servoX.write(pos);     
-    servoY.write(pos);    
-    delay(msDelay);                    
-  }
-  for (pos = 180; pos >= 0; pos -= 1) { 
-    servoX.write(pos);     
-    servoY.write(pos);             
-    delay(msDelay);             
-  }
-}
 
 
 
