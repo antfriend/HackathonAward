@@ -8,6 +8,9 @@ int pos = 0;
 const int PhotoBottomPin = A0;
 const int PhotoRightPin = A1;
 const int PhotoLeftPin = A2;
+const int LED_R_Pin = 3;
+const int LED_G_Pin = 5;
+const int LED_B_Pin = 6;
 
 int msDelay = 55;
 int PhotoBottom = 0;
@@ -24,6 +27,11 @@ void setup() {
   servoY.write(servoYPos);
   servoX.write(servoXPos);
   //Serial.begin(9600);
+  pinMode(LED_R_Pin, OUTPUT);
+  pinMode(LED_G_Pin, OUTPUT);
+  pinMode(LED_B_Pin, OUTPUT);
+  turnOnOne(LED_R_Pin);
+  delay(1000);
 }
 
 void loop() {
@@ -36,11 +44,23 @@ void loop() {
   {
     yDiff = PhotoBottom - PhotoLeft;
     constrainedYupdate(yDiff);
+    turnOnOne(LED_G_Pin);
   }else{
     yDiff = PhotoBottom - PhotoRight;
     constrainedYupdate(yDiff);
+    turnOnOne(LED_B_Pin);
   }
   
+}
+
+void turnOnOne(int led)
+{
+  //turn off all
+  digitalWrite(LED_R_Pin, LOW);
+  digitalWrite(LED_G_Pin, LOW);
+  digitalWrite(LED_B_Pin, LOW);
+  //turn on the one
+  digitalWrite(led, HIGH);
 }
 
 void serialOut()
