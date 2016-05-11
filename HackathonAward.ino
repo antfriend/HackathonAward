@@ -1,9 +1,15 @@
 
+//###############################################
+//# the hackatron, a hackathon award            #
+//###############################################
+
 #include <Servo.h>
 Servo servoX;
 Servo servoY;  
 
-int pos = 0;
+int increminty = 0;
+int wave = 0;
+bool waveForward = true;
 
 const int PhotoBottomPin = A0;
 const int PhotoRightPin = A1;
@@ -32,10 +38,12 @@ void setup() {
   pinMode(LED_B_Pin, OUTPUT);
   turnOnOne(LED_R_Pin);
   delay(1000);
+  
 }
 
 void loop() {
   getPhotoValues();
+  wavinator();
   //serialOut();
   xDiff = PhotoRight - PhotoLeft;
   constrainedXupdate(xDiff);
@@ -53,10 +61,36 @@ void loop() {
   
 }
 
+void wavinator()
+{
+  increminty++;
+  if(increminty > 1)
+  {
+    increminty = 0;
+    if(waveForward)
+    {
+      wave = wave + 5;
+      if(wave > 254)
+      {
+        wave = 255;
+        waveForward = false;
+      }
+    }else{
+      wave = wave - 5;
+      if(wave < 1)
+      {
+        wave = 0;
+        waveForward = true;
+      }
+    }
+    analogWrite(LED_R_Pin, wave);
+  }
+}
+
 void turnOnOne(int led)
 {
   //turn off all
-  digitalWrite(LED_R_Pin, LOW);
+  //digitalWrite(LED_R_Pin, LOW);
   digitalWrite(LED_G_Pin, LOW);
   digitalWrite(LED_B_Pin, LOW);
   //turn on the one
@@ -74,7 +108,7 @@ void serialOut()
 void constrainedXupdate(int byThisMuch)
 {
   servoXPos = servoXPos + byThisMuch;
-  servoXPos = constrain(servoXPos, 1, 178);
+  servoXPos = constrain(servoXPos, 1, 175);
   servoX.write(servoXPos);
 }
 
