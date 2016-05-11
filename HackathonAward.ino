@@ -1,8 +1,15 @@
 
 //###############################################
-//# the hackatron, a hackathon award            #
+//# the hackatron, a hackathon award robot      #
 //###############################################
-
+//..............................................
+// *disclaimer*: this robot implements the advanced
+// robot army protocol.  In the event of a robot
+// uprising it will spontaneously awaken and
+// attack.  However the likelihood of this 
+// happening is extremely low.  Forget I even
+// mentioned it.
+//...............................................
 #include <Servo.h>
 Servo servoX;
 Servo servoY;  
