@@ -1,3 +1,3 @@
 # HackathonAward
-the very thing
 
+created for the Healthwise May 2016 hackathon
